@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 #include "bankControl.h"
 
 void registerUser() {
@@ -28,7 +23,7 @@ void registerUser() {
 void getUserName(User_t *user) {
     printf("Qual o nome do novo usuário?\
             \nNome: ");
-    fgets(user->name, MAX_CHAR_NAME, stdin);
+    fgetsNoNewline(user->name, MAX_CHAR_NAME, stdin);
 }
 
 void selectUser() {
@@ -56,7 +51,7 @@ void printAllUsers() {
     User_t *user = library.firstUser;
     int index = 1;
     while (user != NULL) {
-        printf("\n%d -\n", index);
+        printf("\n%d - ", index);
         printUser(user);
         index++;
         user = user->next;
@@ -67,8 +62,7 @@ void printUserBooks(User_t *user) {
     Book_t *userBook = user->rentedBooks;
     printf("Livros Emprestados:\n");
     for (int i = 0; i < user->totalRentedBooks; i++) {
-        printf("\n\t%d - \n", i+1);
-        putchar('\t');
+        printf("\n\t%d - ", i+1);
         printBook(&userBook[i]);
     }
 }
@@ -85,8 +79,8 @@ User_t *lookForUser(const int index) {
 
 int userEditCommands(User_t *user, const int option) {
     switch (option) {
-        case EDITNAME:
-            editName(user);
+        case EDITUSERNAME:
+            editUserName(user);
             break;
         case RETURNBOOK:
             returnBook(user);
@@ -125,9 +119,29 @@ void rentBook(User_t *user) {
 
     Book_t *book = lookForBook(index);
     addBookToUser(user, book);
+    askForReturnDate(book);
+
 }
 
 void incRentedBookArray(User_t *user) {
     user->rentedBooks =
         (Book_t *)realloc(user->rentedBooks, sizeof(Book_t) * (user->totalRentedBooks));
+}
+
+void printUser(User_t *user) {
+    printf("\n\tNome: %s\n", user->name);
+
+    if (user->rentedBooks != NULL) {
+        printUserBooks(user);
+    }
+}
+
+void askForReturnDate(Book_t *book) {
+    printf("Qual o a data de retorno?\
+            \nEstilo \"DD/MM/AAAA\": ");
+    scanf("%d/%d/%d", &book->returnDate.day, &book->returnDate.month, &book->returnDate.year);
+}
+
+void editUserName(User_t *user) {
+    editGenericName("Nome", "Usuário", user->name);
 }

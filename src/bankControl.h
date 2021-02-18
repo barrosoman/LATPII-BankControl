@@ -1,4 +1,16 @@
-#pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+#ifdef _WIN32
+    #define clean "cls"
+#elif __linux
+    #define clean "clear"
+#else
+    #define clean ""
+#endif
 
 #define MAX_CHAR_NAME 128
 #define INVALID_OPTION -1
@@ -11,17 +23,15 @@ typedef struct date{
 
 typedef struct book {
     char name[MAX_CHAR_NAME];
-    char autor[MAX_CHAR_NAME];
+    char author[MAX_CHAR_NAME];
     bool isRented;
     struct date returnDate;
     struct book *prev, *next;
-    struct book *prevRented, *nextRented;
 } Book_t;
 
 
 typedef struct user {
     char name[MAX_CHAR_NAME];
-    /* struct book *firstRentedBook; */
     struct user *prev, *next;
 
     int totalRentedBooks;
@@ -39,13 +49,19 @@ typedef struct library {
 extern Library_t library;
 
 enum USER_EDIT_OPTIONS {
-    EDITNAME = 1,
+    EDITUSERNAME = 1,
     RETURNBOOK = 2,
     RENTBOOK = 3,
     DELETEUSER = 4,
 };
 
-enum OPTIONS {
+enum BOOK_EDIT_OPTIONS {
+    EDITBOOKNAME = 1,
+    EDITBOOKAUTHOR = 2,
+    DELETEBOOK = 3,
+};
+
+enum MENU_OPTIONS {
     QUIT,
     SHOWUSERS,
     CREATEUSER,
@@ -78,7 +94,6 @@ void freeUsers();
 void sort();
 int isNumeric(const char *buffer);
 void printEditUserMenu();
-void editName(User_t *user);
 void returnBook(User_t *user);
 Book_t *lookForBook(const int index);
 void getBookName(Book_t *book);
@@ -87,3 +102,15 @@ void printAllBooks();
 void addBookToUser(User_t *user, Book_t *book);
 void incRentedBookArray(User_t *user);
 void exportToFile();
+void askForReturnDate(Book_t *book);
+void getBookAuthor(Book_t *book);
+void removeNewLine(char *string);
+void editUserName(User_t *user);
+void editGenericName(const char *prompt, const char *bookOrUser, char *field);
+void printEditBookMenu();
+int bookEditCommands(Book_t *book, const int option);
+void selectBook();
+void editBookAuthor(Book_t *book);
+void editBookName(Book_t *book);
+void deleteBook(Book_t *book);
+void fgetsNoNewline(char *s, int size, FILE *stream);

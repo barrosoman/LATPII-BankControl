@@ -1,94 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 #include "bankControl.h"
-
-void menuLoop() {
-    int option;
-    while (1) {
-        showMenu();
-        option = getNumberFromInput();
-        system("clear");
-        menuCases(option);
-    }
-}
 
 int getNumberFromInput() {
     char buffer[MAX_CHAR_NAME];
-    fgets(buffer, MAX_CHAR_NAME, stdin);
+    fgetsNoNewline(buffer, MAX_CHAR_NAME, stdin);
     if (isNumeric(buffer)) {
         return atoi(buffer);
     }
     return 0;
-}
-
-void showMenu() {
-    printf("\
-            \n1 - Mostrar os alunos cadastrados;\
-            \n2 - Registar um aluno novo;\
-            \n3 - Selecionar um aluno;\
-            \n\
-            \n4 - Mostrar livros cadastrados;\
-            \n5 - Registrar um livro novo;\
-            \n6 - Selecionar um livro novo;\
-            \n\
-            \n7 - Importar dados;\
-            \n8 - Exportar dados;\
-            \n\
-            \n0 - Sair;\
-            \n\n");
-}
-
-void menuCases(const int option) {
-    switch (option) {
-        case SHOWUSERS:
-            printAllUsers();
-            break;
-        case CREATEUSER:
-            registerUser();
-            break;
-        case SELECTUSER:
-            selectUser();
-            break;
-        case SHOWBOOKS:
-            printAllBooks();
-            break;
-        case CREATEBOOK:
-            registerBook();
-            break;
-        case SELECTBOOK:
-            break;
-        case IMPORT:
-            break;
-        case EXPORT:
-            exportToFile();
-            break;
-        case QUIT:
-            exit(EXIT_SUCCESS);
-            break;
-        default:
-            printf("Opção inválida!\n");
-            break;
-    }
-}
-
-
-
-void printUser(User_t *user) {
-    printf("\n\tNome: %s\n", user->name);
-
-    if (user->rentedBooks != NULL) {
-        printUserBooks(user);
-    }
-}
-
-void printBook(Book_t *book) {
-    printf("\tNome: %s\n", book->name);
-
-    if (book->isRented) {
-    }
 }
 
 void sortBooksCres() {
@@ -146,18 +64,19 @@ int isNumeric(const char *buffer) {
         return 1;
 }
 
-
-void printEditUserMenu() {
-    printf("O que deseja fazer?\
-            \n1 - Editar nome.\
-            \n2 - Devolver algum livro.\
-            \n3 - Deletar usuário.\
-            \n0 - Sair.\n");
-}
-
-void editName(User_t *user) {
-    fgets(user->name, MAX_CHAR_NAME, stdin);
-}
-
 void returnBook(User_t *user) {
+}
+
+void removeNewLine(char *string) {
+    string = strtok(string, "\n");
+}
+
+void editGenericName(const char *prompt, const char *bookOrUser, char *field) {
+    printf("%s do %s: ", prompt, bookOrUser);
+    fgetsNoNewline(field, MAX_CHAR_NAME, stdin);
+}
+
+void fgetsNoNewline(char *s, int size, FILE *stream) {
+    fgets(s, size, stream);
+    removeNewLine(s);
 }
