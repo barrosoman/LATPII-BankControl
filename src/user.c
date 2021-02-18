@@ -27,6 +27,8 @@ void getUserName(User_t *user) {
 }
 
 void selectUser() {
+    printf("\nQual usuário?\
+            \nId: ");
     int userIndex = getNumberFromInput();
     if (userIndex == 0 || userIndex > library.totalUsers) {
         printf("Id inválido\n");
@@ -37,6 +39,7 @@ void selectUser() {
     int option;
     while (1) {
         printUser(user);
+        putchar('\n');
         printEditUserMenu();
         option = getNumberFromInput();
 
@@ -100,6 +103,12 @@ int userEditCommands(User_t *user, const int option) {
 }
 
 void deleteUser(User_t *user) {
+    if (library.totalUsers == 1) {
+        free(user);
+        library.firstUser = library.lastUser = NULL;
+        library.totalUsers--;
+        return;
+    }
     user->prev->next = user->next;
     user->next->prev = user->prev;
     free(user);

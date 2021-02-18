@@ -1,5 +1,5 @@
 CC=gcc
 CFLAGS=-Wall -Werror -std=c99
-OUT=-o bankControl
+OUT=-o libraryControl
 all:
 	$(CC) src/*.c $(CFLAGS) $(OUT);
