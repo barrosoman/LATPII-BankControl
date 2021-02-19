@@ -1,4 +1,4 @@
-#include "bankControl.h"
+#include "libraryControl.h"
 
 void menuLoop() {
     int option;
@@ -65,6 +65,7 @@ void printEditUserMenu() {
     printf("O que deseja fazer?\
             \n1 - Editar nome.\
             \n2 - Devolver algum livro.\
-            \n3 - Deletar usuário.\
+            \n3 - Pegar um livro emprestado.\
+            \n4 - Deletar usuário.\
             \n0 - Sair.\n");
 }

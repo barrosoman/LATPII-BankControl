@@ -1,4 +1,4 @@
-#include "bankControl.h"
+#include "libraryControl.h"
 Library_t library;
 int main() {
     atexit(freeAll);

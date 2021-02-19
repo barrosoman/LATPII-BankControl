@@ -1,4 +1,4 @@
-#include "bankControl.h"
+#include "libraryControl.h"
 
 int getNumberFromInput() {
     char buffer[MAX_CHAR_NAME];
@@ -62,9 +62,6 @@ int isNumeric(const char *buffer) {
 
     /* Se não, o texto é só uma palavra */
         return 1;
-}
-
-void returnBook(User_t *user) {
 }
 
 void removeNewLine(char *string) {

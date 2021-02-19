@@ -1,4 +1,4 @@
-#include "bankControl.h"
+#include "libraryControl.h"
 
 Book_t *lookForBook(const int index) {
     Book_t *book = library.firstBook;
@@ -10,17 +10,12 @@ Book_t *lookForBook(const int index) {
     return book;
 }
 
-void getBookName(Book_t *book) {
-    printf("\nQual o nome do novo livro?\
-            \nNome: ");
-
-    fgetsNoNewline(book->name, MAX_CHAR_NAME, stdin);
+void editBookName(Book_t *book) {
+    editGenericName("Nome", "livro", book->name);
 }
 
-void getBookAuthor(Book_t *book) {
-    printf("\nQual o nome do novo autor?\
-            \nAutor: ");
-    fgetsNoNewline(book->author, MAX_CHAR_NAME, stdin);
+void editBookAuthor(Book_t *book) {
+    editGenericName("Autor", "livro", book->author);
 }
 
 void registerBook() {
@@ -39,8 +34,8 @@ void registerBook() {
     }
 
     newBook->isRented = false;
-    getBookName(newBook);
-    getBookAuthor(newBook);
+    editBookName(newBook);
+    editBookAuthor(newBook);
 }
 
 void printAllBooks() {
@@ -49,6 +44,7 @@ void printAllBooks() {
     while (book != NULL) {
         printf("%d - ", index);
         printBook(book);
+        index++;
         book = book->next;
     }
 }
@@ -63,7 +59,7 @@ void addBookToUser(User_t *user, Book_t *book) {
     user->totalRentedBooks++;
     incRentedBookArray(user);
 
-    user->rentedBooks[index] = *book;
+    user->rentedBooks[index] = book;
     book->isRented = true;
 }
 
@@ -78,7 +74,13 @@ void printBook(Book_t *book) {
 }
 
 void selectBook() {
+    printAllBooks();
+    printf("\nQual livro?\
+            \nId: ");
     int bookIndex = getNumberFromInput();
+
+    system(clean);
+
     if (bookIndex == 0 || bookIndex > library.totalBooks) {
         printf("Id inválido\n");
         return;
@@ -115,7 +117,10 @@ int bookEditCommands(Book_t *book, const int option) {
             editBookAuthor(book);
             break;
         case DELETEBOOK:
-            deleteBook(book);
+            if (deleteBook(book) == QUIT) {
+                return QUIT;
+            }
+            break;
         case QUIT:
             return QUIT;
         default:
@@ -125,17 +130,26 @@ int bookEditCommands(Book_t *book, const int option) {
     return 1;
 }
 
-void editBookName(Book_t *book) {
-    editGenericName("Nome", "livro", book->name);
-}
+int deleteBook(Book_t *book) {
+    char answer[MAX_CHAR_NAME];
+    while (answer[0] != 's') {
+        printf("\nQuer mesmo deletar o livro?\
+                \nResposta(n = não, s = sim): ");
+        fgets(answer, MAX_CHAR_NAME, stdin);
+        if (answer[0] == 'n') {
+            return 1;
+        }
+    }
 
-void editBookAuthor(Book_t *book) {
-    editGenericName("Autor", "livro", book->author);
-}
-
-void deleteBook(Book_t *book) {
-    book->prev->next = book->next;
-    book->next->prev = book->prev;
-    free(book);
-    library.totalBooks--;
+    if (library.totalBooks == 1) {
+        free(book);
+        library.firstBook = library.lastBook = NULL;
+        library.totalBooks--;
+    } else {
+        book->prev->next = book->next;
+        book->next->prev = book->prev;
+        free(book);
+        library.totalBooks--;
+    }
+    return QUIT;
 }

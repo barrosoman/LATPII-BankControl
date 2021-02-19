@@ -35,7 +35,7 @@ typedef struct user {
     struct user *prev, *next;
 
     int totalRentedBooks;
-    struct book *rentedBooks;
+    struct book **rentedBooks;
 } User_t;
 
 typedef struct library {
@@ -74,13 +74,12 @@ enum MENU_OPTIONS {
 };
 
 void registerUser();
-void getUserName(User_t *user);
 void selectUser();
 void printAllUsers();
 void printUserBooks(User_t *user);
 User_t *lookForUser(const int index);
 int userEditCommands(User_t *user, const int option);
-void deleteUser(User_t *user);
+int deleteUser(User_t *user);
 void rentBook(User_t *user);
 void menuLoop();
 int getNumberFromInput();
@@ -94,16 +93,14 @@ void freeUsers();
 void sort();
 int isNumeric(const char *buffer);
 void printEditUserMenu();
-void returnBook(User_t *user);
+void returnBook(User_t *user, const int option);
 Book_t *lookForBook(const int index);
-void getBookName(Book_t *book);
 void registerBook();
 void printAllBooks();
 void addBookToUser(User_t *user, Book_t *book);
 void incRentedBookArray(User_t *user);
 void exportToFile();
 void askForReturnDate(Book_t *book);
-void getBookAuthor(Book_t *book);
 void removeNewLine(char *string);
 void editUserName(User_t *user);
 void editGenericName(const char *prompt, const char *bookOrUser, char *field);
@@ -112,5 +109,7 @@ int bookEditCommands(Book_t *book, const int option);
 void selectBook();
 void editBookAuthor(Book_t *book);
 void editBookName(Book_t *book);
-void deleteBook(Book_t *book);
+int deleteBook(Book_t *book);
 void fgetsNoNewline(char *s, int size, FILE *stream);
+void removeBookFromUser(User_t *user, const int bookIndex);
+void returnBookFromUser(User_t *user);
