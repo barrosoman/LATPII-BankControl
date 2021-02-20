@@ -1,25 +1,25 @@
+#include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 
 #ifdef _WIN32
-    #define clean "cls"
+#define clean "cls"
 #elif __linux
-    #define clean "clear"
+#define clean "clear"
 #else
-    #define clean ""
+#define clean ""
 #endif
 
 #define MAX_CHAR_NAME 128
 #define INVALID_OPTION -1
 #define FIRST_INDEX 1
 
-typedef struct date{
-    int year, month, day;
+typedef struct date {
+    char dateString[MAX_CHAR_NAME];
+    char year[5], month[3], day[2];
 } Date_t;
-
 
 typedef struct book {
     char name[MAX_CHAR_NAME];
@@ -28,7 +28,6 @@ typedef struct book {
     struct date returnDate;
     struct book *prev, *next;
 } Book_t;
-
 
 typedef struct user {
     char name[MAX_CHAR_NAME];
@@ -43,15 +42,18 @@ typedef struct library {
     User_t *lastUser;
     Book_t *firstBook;
     Book_t *lastBook;
+    Book_t **rentedBooks;
     int totalUsers;
     int totalBooks;
 } Library_t;
 extern Library_t library;
 
+/* extern Book_t teste1, teste2, teste3; */
+
 enum USER_EDIT_OPTIONS {
     EDITUSERNAME = 1,
-    RETURNBOOK = 2,
-    RENTBOOK = 3,
+    RENTBOOK = 2,
+    RETURNBOOK = 3,
     DELETEUSER = 4,
 };
 
@@ -61,12 +63,18 @@ enum BOOK_EDIT_OPTIONS {
     DELETEBOOK = 3,
 };
 
+enum PRINT_BOOKS_OPTIONS {
+    ALLBOOKS = 1,
+    RENTEDCRES = 2,
+    RENTEDDECRES = 3,
+};
+
 enum MENU_OPTIONS {
     QUIT,
     SHOWUSERS,
     CREATEUSER,
     SELECTUSER,
-    SHOWBOOKS,
+    PRINTBOOKSMENU,
     CREATEBOOK,
     SELECTBOOK,
     IMPORT,
@@ -78,7 +86,7 @@ void selectUser();
 void printAllUsers();
 void printUserBooks(User_t *user);
 User_t *lookForUser(const int index);
-int userEditCommands(User_t *user, const int option);
+int userEditCases(User_t *user, const int option);
 int deleteUser(User_t *user);
 void rentBook(User_t *user);
 void menuLoop();
@@ -88,7 +96,7 @@ void menuCases(const int option);
 void printUser(User_t *user);
 void printBook(Book_t *book);
 void freeAll();
-void freeBooks ();
+void freeBooks();
 void freeUsers();
 void sort();
 int isNumeric(const char *buffer);
@@ -113,3 +121,19 @@ int deleteBook(Book_t *book);
 void fgetsNoNewline(char *s, int size, FILE *stream);
 void removeBookFromUser(User_t *user, const int bookIndex);
 void returnBookFromUser(User_t *user);
+void incRentedBooks(long total);
+void printBooksMenuOptions();
+void printBooksMenu();
+void sortBooksCres(const int totalRentedBooks);
+void allocateMemoryToRentedBooks(int *totalRentedBooks);
+void printSortedBooks(const int totalRentedBooks);
+int getRentedBooks();
+void printBooksCases(const int option, const int totalRentedBooks);
+void sortBooksDecres(const int totalRentedBooks);
+int selectUserWhile(const int userIndex);
+int selectBookWhile(const int bookIndex);
+
+
+void exportToFile();
+void exportUsersToFile(const char *userFilename);
+void askForFilename(char *filename, char *prompt);

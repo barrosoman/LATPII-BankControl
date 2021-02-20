@@ -9,16 +9,34 @@ int getNumberFromInput() {
     return 0;
 }
 
-void sortBooksCres() {
-}
-
-void sortBooksUncres() {
-}
-
-void importFromFile() {
-}
+void importFromFile() {}
 
 void exportToFile() {
+    char userFilename[MAX_CHAR_NAME];
+    askForFilename(userFilename, "usuários");
+    /* char bookFilename[MAX_CHAR_NAME] = askForUserFile(); */
+
+    exportUsersToFile(userFilename);
+}
+
+void exportUsersToFile(const char *userFilename) {
+    FILE *userFile = fopen(userFilename, "w");
+    User_t *user = library.firstUser;
+    while (user != NULL) {
+        fprintf(userFile,
+                "%s\
+                \n%d\
+                \n\
+                \n",
+                user->name, user->totalRentedBooks);
+        user = user->next;
+    }
+}
+
+void askForFilename(char *filename, char *prompt) {
+    printf("Qual o nome do arquivo para salvar os %s?\
+            \nArquivo: ", prompt);
+    fgetsNoNewline(filename, MAX_CHAR_NAME, stdin);
 }
 
 void freeAll() {
@@ -26,7 +44,7 @@ void freeAll() {
     freeBooks();
 }
 
-void freeBooks () {
+void freeBooks() {
     Book_t *book = library.firstBook;
     Book_t *aux;
     while (book != NULL) {
@@ -46,8 +64,7 @@ void freeUsers() {
     }
 }
 
-void sort() {
-}
+void sort() {}
 
 int isNumeric(const char *buffer) {
     char *foo;
@@ -61,11 +78,7 @@ int isNumeric(const char *buffer) {
     }
 
     /* Se não, o texto é só uma palavra */
-        return 1;
-}
-
-void removeNewLine(char *string) {
-    string = strtok(string, "\n");
+    return 1;
 }
 
 void editGenericName(const char *prompt, const char *bookOrUser, char *field) {
@@ -75,5 +88,5 @@ void editGenericName(const char *prompt, const char *bookOrUser, char *field) {
 
 void fgetsNoNewline(char *s, int size, FILE *stream) {
     fgets(s, size, stream);
-    removeNewLine(s);
+    s = strtok(s, "\n");
 }

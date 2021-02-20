@@ -1,7 +1,17 @@
 #include "libraryControl.h"
 
+User_t *lookForUser(const int index) {
+    User_t *user = library.firstUser;
+    if (index != FIRST_INDEX) {
+        for (int i = FIRST_INDEX; i < index; i++) {
+            user = user->next;
+        }
+    }
+    return user;
+}
+
 void registerUser() {
-    User_t *newUser = (User_t *) malloc(sizeof(User_t));
+    User_t *newUser = (User_t *)malloc(sizeof(User_t));
     library.totalUsers++;
 
     if (library.firstUser == NULL) {
@@ -21,15 +31,26 @@ void registerUser() {
 }
 
 void selectUser() {
+    if (library.firstUser == NULL) {
+        printf("Não há usuários cadastrados.\n");
+        return;
+    }
+
     printAllUsers();
-    printf("\nQual usuário?\
+    printf(
+        "\nQual usuário?\
             \nId: ");
     int userIndex = getNumberFromInput();
     if (userIndex == 0 || userIndex > library.totalUsers) {
         printf("Id inválido\n");
         return;
     }
+    if (selectUserWhile(userIndex) == QUIT) {
+        return;
+    }
+}
 
+int selectUserWhile(const int userIndex) {
     User_t *user = lookForUser(userIndex);
     int option;
     while (1) {
@@ -38,11 +59,12 @@ void selectUser() {
         printEditUserMenu();
         option = getNumberFromInput();
 
-        system("clear");
-        if (userEditCommands(user, option) == QUIT) {
-            return;
+        system(clean);
+        if (userEditCases(user, option) == QUIT) {
+            return QUIT;
         }
-    };
+        system(clean);
+    }
 }
 
 void printAllUsers() {
@@ -60,44 +82,9 @@ void printUserBooks(User_t *user) {
     Book_t **userBook = user->rentedBooks;
     printf("\tLivros Emprestados:\n");
     for (int i = 0; i < user->totalRentedBooks; i++) {
-        printf("\n\t%d - ", i+1);
+        printf("\n\t%d - ", i + 1);
         printBook(userBook[i]);
     }
-}
-
-User_t *lookForUser(const int index) {
-    User_t *user = library.firstUser;
-    if (index != FIRST_INDEX) {
-        for (int i = FIRST_INDEX; i < index; i++) {
-            user = user->next;
-        }
-    }
-    return user;
-}
-
-int userEditCommands(User_t *user, const int option) {
-    switch (option) {
-        case EDITUSERNAME:
-            editUserName(user);
-            break;
-        case RETURNBOOK:
-            returnBookFromUser(user);
-            break;
-        case RENTBOOK:
-            rentBook(user);
-            break;
-        case DELETEUSER:
-            if (deleteUser(user) == QUIT) {
-                return QUIT;
-            }
-            break;
-        case QUIT:
-            return QUIT;
-        default:
-            printf("Opção inválida");
-            break;
-    }
-    return 1;
 }
 
 int deleteUser(User_t *user) {
@@ -108,7 +95,8 @@ int deleteUser(User_t *user) {
 
     char answer[MAX_CHAR_NAME];
     while (answer[0] != 's') {
-        printf("\nQuer mesmo deletar o usuário?\
+        printf(
+            "\nQuer mesmo deletar o usuário?\
                 \nResposta(n = não, s = sim): ");
         fgets(answer, MAX_CHAR_NAME, stdin);
         if (answer[0] == 'n') {
@@ -134,7 +122,8 @@ void rentBook(User_t *user) {
         return;
     }
     printAllBooks();
-    printf("Qual livro a ser emprestado?\
+    printf(
+        "Qual livro a ser emprestado?\
             \nId: ");
 
     const int index = getNumberFromInput();
@@ -150,12 +139,11 @@ void rentBook(User_t *user) {
     }
     addBookToUser(user, book);
     askForReturnDate(book);
-
 }
 
 void incRentedBookArray(User_t *user) {
-    user->rentedBooks =
-        (Book_t **)realloc(user->rentedBooks, sizeof(Book_t *) * (user->totalRentedBooks));
+    user->rentedBooks = (Book_t **)realloc(
+        user->rentedBooks, sizeof(Book_t *) * (user->totalRentedBooks));
 }
 
 void printUser(User_t *user) {
@@ -169,11 +157,15 @@ void printUser(User_t *user) {
 void askForReturnDate(Book_t *book) {
     char date[MAX_CHAR_NAME];
 
-    printf("Qual o a data de retorno?\
+    printf(
+        "Qual o a data de retorno?\
             \nEstilo \"DD/MM/AAAA\": ");
 
     fgetsNoNewline(date, MAX_CHAR_NAME, stdin);
-    sscanf(date, "%d/%d/%d", &book->returnDate.day, &book->returnDate.month, &book->returnDate.year);
+    sscanf(date, "%s/%s/%s", book->returnDate.day, book->returnDate.month,
+           book->returnDate.year);
+    sprintf(book->returnDate.dateString, "%s%s%s", book->returnDate.year,
+            book->returnDate.month, book->returnDate.day);
 }
 
 void editUserName(User_t *user) {
@@ -182,7 +174,8 @@ void editUserName(User_t *user) {
 
 void returnBookFromUser(User_t *user) {
     printUserBooks(user);
-    printf("\nQual livro a devolver?\
+    printf(
+        "\nQual livro a devolver?\
             \nId: ");
     const int option = getNumberFromInput();
     if (option <= 0 || option > user->totalRentedBooks) {
@@ -191,7 +184,6 @@ void returnBookFromUser(User_t *user) {
     }
     returnBook(user, option - 1);
     removeBookFromUser(user, option - 1);
-
 }
 
 void returnBook(User_t *user, const int rentedBookIndex) {
@@ -214,7 +206,7 @@ void removeBookFromUser(User_t *user, const int bookIndex) {
     }
 
     for (int i = bookIndex; i < user->totalRentedBooks + 1; i++) {
-        user->rentedBooks[i] = user->rentedBooks[i+1];
+        user->rentedBooks[i] = user->rentedBooks[i + 1];
     }
     user->totalRentedBooks--;
     incRentedBookArray(user);
