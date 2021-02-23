@@ -9,36 +9,6 @@ int getNumberFromInput() {
     return 0;
 }
 
-void importFromFile() {}
-
-void exportToFile() {
-    char userFilename[MAX_CHAR_NAME];
-    askForFilename(userFilename, "usuários");
-    /* char bookFilename[MAX_CHAR_NAME] = askForUserFile(); */
-
-    exportUsersToFile(userFilename);
-}
-
-void exportUsersToFile(const char *userFilename) {
-    FILE *userFile = fopen(userFilename, "w");
-    User_t *user = library.firstUser;
-    while (user != NULL) {
-        fprintf(userFile,
-                "%s\
-                \n%d\
-                \n\
-                \n",
-                user->name, user->totalRentedBooks);
-        user = user->next;
-    }
-}
-
-void askForFilename(char *filename, char *prompt) {
-    printf("Qual o nome do arquivo para salvar os %s?\
-            \nArquivo: ", prompt);
-    fgetsNoNewline(filename, MAX_CHAR_NAME, stdin);
-}
-
 void freeAll() {
     freeUsers();
     freeBooks();
@@ -64,8 +34,6 @@ void freeUsers() {
     }
 }
 
-void sort() {}
-
 int isNumeric(const char *buffer) {
     char *foo;
 
@@ -89,4 +57,17 @@ void editGenericName(const char *prompt, const char *bookOrUser, char *field) {
 void fgetsNoNewline(char *s, int size, FILE *stream) {
     fgets(s, size, stream);
     s = strtok(s, "\n");
+}
+
+int isStrEqual(const char *string1, const char *string2) {
+    if (strcmp(string1, string2) == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+void getReturnDateFromString(Book_t *book, const char *string) {
+    Date_t *returnDate = &book->returnDate;
+    sscanf(string, "%4d%2d%2d", &returnDate->year, &returnDate->month,
+           &returnDate->day);
 }

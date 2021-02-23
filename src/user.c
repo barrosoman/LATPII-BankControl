@@ -155,17 +155,20 @@ void printUser(User_t *user) {
 }
 
 void askForReturnDate(Book_t *book) {
-    char date[MAX_CHAR_NAME];
+    char date[MAX_CHAR_NAME], day[MAX_CHAR_NAME], month[MAX_CHAR_NAME],
+        year[MAX_CHAR_NAME];
 
     printf(
         "Qual o a data de retorno?\
             \nEstilo \"DD/MM/AAAA\": ");
 
     fgetsNoNewline(date, MAX_CHAR_NAME, stdin);
-    sscanf(date, "%s/%s/%s", book->returnDate.day, book->returnDate.month,
-           book->returnDate.year);
-    sprintf(book->returnDate.dateString, "%s%s%s", book->returnDate.year,
-            book->returnDate.month, book->returnDate.day);
+    sscanf(date, "%2s/%2s/%4s", day, month, year);
+
+    sprintf(book->returnDate.dateString, "%s%s%s", year, month, day);
+    book->returnDate.day = atoi(day);
+    book->returnDate.month = atoi(month);
+    book->returnDate.year = atoi(year);
 }
 
 void editUserName(User_t *user) {
@@ -173,6 +176,9 @@ void editUserName(User_t *user) {
 }
 
 void returnBookFromUser(User_t *user) {
+    if (user->totalRentedBooks == 0) {
+        return;
+    }
     printUserBooks(user);
     printf(
         "\nQual livro a devolver?\

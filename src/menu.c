@@ -15,9 +15,8 @@ void printBooksMenu() {
     printBooksMenuOptions();
     const int option = getNumberFromInput();
     system(clean);
-    printBooksCases(option, totalRentedBooks);
 
-    free(library.rentedBooks);
+    printBooksCases(option, totalRentedBooks);
 }
 
 void printBooksCases(const int option, const int totalRentedBooks) {
@@ -41,7 +40,7 @@ void printBooksCases(const int option, const int totalRentedBooks) {
 int getRentedBooks() {
     int i = 0;
     Book_t *auxBook = library.firstBook;
-    do {
+    while (auxBook != NULL) {
         if (auxBook->isRented == true) {
             library.rentedBooks = (Book_t **)realloc(library.rentedBooks,
                                                      sizeof(Book_t *) * i + 1);
@@ -49,7 +48,7 @@ int getRentedBooks() {
             i++;
         }
         auxBook = auxBook->next;
-    } while (auxBook != NULL);
+    }
     return i;
 }
 
@@ -93,7 +92,7 @@ void showMenu() {
             \n8 - Exportar dados;\
             \n\
             \n0 - Sair;\
-            \n\n");
+            \nOpção: ");
 }
 
 void menuCases(const int option) {
@@ -109,7 +108,6 @@ void menuCases(const int option) {
             break;
         case PRINTBOOKSMENU:
             printBooksMenu();
-            /* printAllBooks(); */
             break;
         case CREATEBOOK:
             registerBook();
@@ -118,11 +116,13 @@ void menuCases(const int option) {
             selectBook();
             break;
         case IMPORT:
+            importFromFile();
             break;
         case EXPORT:
             exportToFile();
             break;
         case QUIT:
+            free(library.rentedBooks);
             exit(EXIT_SUCCESS);
             break;
         default:
@@ -135,8 +135,8 @@ void printEditUserMenu() {
     printf(
         "O que deseja fazer?\
             \n1 - Editar nome.\
-            \n2 - Devolver algum livro.\
-            \n3 - Pegar um livro emprestado.\
+            \n2 - Pegar um livro emprestado.\
+            \n3 - Devolver algum livro.\
             \n4 - Deletar usuário.\
             \n0 - Sair.\n");
 }

@@ -100,7 +100,7 @@ void printBook(Book_t *book) {
         book->name, book->author);
 
     if (book->isRented) {
-        printf("\tDia de retorno: %s/%s/%s\n", book->returnDate.day,
+        printf("\tDia de retorno: %d/%d/%d\n", book->returnDate.day,
                book->returnDate.month, book->returnDate.year);
     }
 }

@@ -18,7 +18,8 @@
 
 typedef struct date {
     char dateString[MAX_CHAR_NAME];
-    char year[5], month[3], day[2];
+    /* char year[10], month[10], day[10]; */
+    int year, month, day;
 } Date_t;
 
 typedef struct book {
@@ -133,7 +134,17 @@ void sortBooksDecres(const int totalRentedBooks);
 int selectUserWhile(const int userIndex);
 int selectBookWhile(const int bookIndex);
 
-
 void exportToFile();
 void exportUsersToFile(const char *userFilename);
-void askForFilename(char *filename, char *prompt);
+void askForFilename(char *filename, const char *prompt);
+void exportBooksToFile(const char *bookFilename);
+
+Book_t *importUserRentedBook(FILE *userFile);
+void importUser(FILE *userFile);
+void importUsers(const char *userFilename);
+void importFromFile();
+void getReturnDateFromString(Book_t *book, const char *string);
+int isAlreadyRegistred(const char *bookName);
+int isStrEqual(const char *string1, const char *string2);
+void importBooks(const char *bookFilename);
+void importBook(FILE *bookFile);
