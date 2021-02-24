@@ -19,15 +19,19 @@ void printBooksMenu() {
     printBooksCases(option, totalRentedBooks);
 }
 
+/* Opçãos do menu de impressão dos dados de livros */
 void printBooksCases(const int option, const int totalRentedBooks) {
     switch (option) {
+        /* Mostrar todos livros sem ordenação */
         case ALLBOOKS:
             printAllBooks();
             break;
+        /* Mostrar todos livros emprestados ordenados crescentemente */
         case RENTEDCRES:
             sortBooksCres(totalRentedBooks);
             printSortedBooks(totalRentedBooks);
             break;
+        /* Mostrar todos livros emprestados ordenados decrescentemente */
         case RENTEDDECRES:
             sortBooksDecres(totalRentedBooks);
             printSortedBooks(totalRentedBooks);
@@ -37,6 +41,7 @@ void printBooksCases(const int option, const int totalRentedBooks) {
     }
 }
 
+/* Organiza todos livros emprestados em um array */
 int getRentedBooks() {
     int i = 0;
     Book_t *auxBook = library.firstBook;
@@ -52,6 +57,7 @@ int getRentedBooks() {
     return i;
 }
 
+/* Imprime os livros sorteados */
 void printSortedBooks(const int totalRentedBooks) {
     for (int i = 0; i < totalRentedBooks; i++) {
         printBook(library.rentedBooks[i]);
@@ -67,6 +73,7 @@ void printBooksMenuOptions() {
             \nOpção: ");
 }
 
+/* Loop do menu principal */
 void menuLoop() {
     int option;
     while (1) {
@@ -77,6 +84,7 @@ void menuLoop() {
     }
 }
 
+/* Mostra as opções do menu principal */
 void showMenu() {
     printf(
         "\
@@ -95,6 +103,7 @@ void showMenu() {
             \nOpção: ");
 }
 
+/* Opções do menu principal */
 void menuCases(const int option) {
     switch (option) {
         case SHOWUSERS:
@@ -131,6 +140,7 @@ void menuCases(const int option) {
     }
 }
 
+/* Mostra as opções de edição de um usuário */
 void printEditUserMenu() {
     printf(
         "O que deseja fazer?\
@@ -141,37 +151,7 @@ void printEditUserMenu() {
             \n0 - Sair.\n");
 }
 
-int bookEditCommands(Book_t *book, const int option) {
-    switch (option) {
-        case EDITBOOKNAME:
-            editBookName(book);
-            break;
-        case EDITBOOKAUTHOR:
-            editBookAuthor(book);
-            break;
-        case DELETEBOOK:
-            if (deleteBook(book) == QUIT) {
-                return QUIT;
-            }
-            break;
-        case QUIT:
-            return QUIT;
-        default:
-            printf("Opção inválida");
-            break;
-    }
-    return 1;
-}
-
-void printEditBookMenu() {
-    printf(
-        "O que deseja fazer?\
-            \n1 - Editar nome.\
-            \n2 - Editar autor.\
-            \n3 - Deletar livro.\
-            \n0 - Sair.\n");
-}
-
+/* Opções do menu de edição de um usuário */
 int userEditCases(User_t *user, const int option) {
     switch (option) {
         case EDITUSERNAME:
@@ -185,6 +165,39 @@ int userEditCases(User_t *user, const int option) {
             break;
         case DELETEUSER:
             if (deleteUser(user) == QUIT) {
+                return QUIT;
+            }
+            break;
+        case QUIT:
+            return QUIT;
+        default:
+            printf("Opção inválida");
+            break;
+    }
+    return 1;
+}
+
+/* Mostra as opções de edição de um usuário */
+void printEditBookMenu() {
+    printf(
+        "O que deseja fazer?\
+            \n1 - Editar nome.\
+            \n2 - Editar autor.\
+            \n3 - Deletar livro.\
+            \n0 - Sair.\n");
+}
+
+/* Opções de edição de um usuário */
+int bookEditCommands(Book_t *book, const int option) {
+    switch (option) {
+        case EDITBOOKNAME:
+            editBookName(book);
+            break;
+        case EDITBOOKAUTHOR:
+            editBookAuthor(book);
+            break;
+        case DELETEBOOK:
+            if (deleteBook(book) == QUIT) {
                 return QUIT;
             }
             break;

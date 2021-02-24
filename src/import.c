@@ -1,5 +1,6 @@
 #include "libraryControl.h"
 
+/* Função que começa a importação de dados */
 void importFromFile() {
     char userFilename[MAX_CHAR_NAME];
     char bookFilename[MAX_CHAR_NAME];
@@ -10,10 +11,11 @@ void importFromFile() {
 
     printf("Qual o nome do arquivo dos livros?\n");
     fgetsNoNewline(bookFilename, MAX_CHAR_NAME, stdin);
-        printf("DEBUG antes importbooks");
     importBooks(bookFilename);
 }
 
+
+/* Responsável para importar dados do arquivo de usuários */
 void importUsers(const char *userFilename) {
     FILE *userFile = fopen(userFilename, "r");
     char aux[MAX_CHAR_NAME];
@@ -24,6 +26,7 @@ void importUsers(const char *userFilename) {
     fclose(userFile);
 }
 
+/* Importa informações de um usuário do arquivo de usuários */
 void importUser(FILE *userFile) {
     User_t *newUser = (User_t *)malloc(sizeof(User_t));
     library.totalUsers++;
@@ -47,10 +50,10 @@ void importUser(FILE *userFile) {
         for (int i = 0; i < newUser->totalRentedBooks; i++) {
             newUser->rentedBooks[i] = importUserRentedBook(userFile);
         }
-        getc(userFile);
     }
 }
 
+/* Importa livros já emprestados do arquivo de usuários */
 Book_t *importUserRentedBook(FILE *userFile) {
     Book_t *newBook = (Book_t *)malloc(sizeof(Book_t));
     library.totalBooks++;
@@ -71,7 +74,6 @@ Book_t *importUserRentedBook(FILE *userFile) {
     fgetsNoNewline(newBook->author, MAX_CHAR_NAME, userFile);
     fgetsNoNewline(newBook->returnDate.dateString, MAX_CHAR_NAME, userFile);
     getReturnDateFromString(newBook, newBook->returnDate.dateString);
-    getchar();
     return newBook;
 }
 
@@ -86,6 +88,7 @@ int isAlreadyRegistred(const char *bookName) {
     return 0;
 }
 
+/* Organiza os dados para importação de um livro */
 void importBook(FILE *bookFile) {
     Book_t *newBook = (Book_t *)malloc(sizeof(Book_t));
     library.totalBooks++;
@@ -104,13 +107,14 @@ void importBook(FILE *bookFile) {
     newBook->isRented = false;
     fgetsNoNewline(newBook->name, MAX_CHAR_NAME, bookFile);
     fgetsNoNewline(newBook->author, MAX_CHAR_NAME, bookFile);
+    getc(bookFile);
 }
 
+/* Responsável para importar dados do arquivo de livros */
 void importBooks(const char *bookFilename) {
     FILE *bookFile = fopen(bookFilename, "r");
-    char aux[MAX_CHAR_NAME];
 
-    while (fgets(aux, MAX_CHAR_NAME, bookFile)) {
+    while (!feof(bookFile)) {
         importBook(bookFile);
     }
     fclose(bookFile);

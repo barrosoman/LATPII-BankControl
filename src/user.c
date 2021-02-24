@@ -1,5 +1,6 @@
 #include "libraryControl.h"
 
+/* Procura por um usuário a partir de um index e retorna o endereço dele */
 User_t *lookForUser(const int index) {
     User_t *user = library.firstUser;
     if (index != FIRST_INDEX) {
@@ -10,6 +11,7 @@ User_t *lookForUser(const int index) {
     return user;
 }
 
+/* Aloca e estabelece um usuário "limpo" na lista */
 void registerUser() {
     User_t *newUser = (User_t *)malloc(sizeof(User_t));
     library.totalUsers++;
@@ -30,6 +32,7 @@ void registerUser() {
     editUserName(newUser);
 }
 
+/* Seleciona um usuário para visualização/editar */
 void selectUser() {
     if (library.firstUser == NULL) {
         printf("Não há usuários cadastrados.\n");
@@ -41,7 +44,7 @@ void selectUser() {
         "\nQual usuário?\
             \nId: ");
     int userIndex = getNumberFromInput();
-    if (userIndex == 0 || userIndex > library.totalUsers) {
+    if (userIndex <= 0 || userIndex > library.totalUsers) {
         printf("Id inválido\n");
         return;
     }
@@ -50,6 +53,7 @@ void selectUser() {
     }
 }
 
+/* Roda o menu de editação até que o usuário queira sair dele */
 int selectUserWhile(const int userIndex) {
     User_t *user = lookForUser(userIndex);
     int option;
@@ -67,6 +71,7 @@ int selectUserWhile(const int userIndex) {
     }
 }
 
+/* Printa as informações de todos usuários cadastrados */
 void printAllUsers() {
     User_t *user = library.firstUser;
     int index = 1;
@@ -78,6 +83,7 @@ void printAllUsers() {
     }
 }
 
+/* Printa todos livros emprestados a um usuários */
 void printUserBooks(User_t *user) {
     Book_t **userBook = user->rentedBooks;
     printf("\tLivros Emprestados:\n");
@@ -87,6 +93,7 @@ void printUserBooks(User_t *user) {
     }
 }
 
+/* Desregistra um usuário da livraria */
 int deleteUser(User_t *user) {
     if (user->rentedBooks != NULL) {
         printf("O usuário ainda tem livros a devolver.");
@@ -117,6 +124,7 @@ int deleteUser(User_t *user) {
     return QUIT;
 }
 
+/* Empresta um livro para um usuários */
 void rentBook(User_t *user) {
     if (library.totalBooks == 0) {
         return;
@@ -127,7 +135,7 @@ void rentBook(User_t *user) {
             \nId: ");
 
     const int index = getNumberFromInput();
-    if (index == 0 || index > library.totalBooks) {
+    if (index <= 0 || index > library.totalBooks) {
         printf("Id inválido\n");
         return;
     }
@@ -141,11 +149,7 @@ void rentBook(User_t *user) {
     askForReturnDate(book);
 }
 
-void incRentedBookArray(User_t *user) {
-    user->rentedBooks = (Book_t **)realloc(
-        user->rentedBooks, sizeof(Book_t *) * (user->totalRentedBooks));
-}
-
+/* Imprime informações de um usuário */
 void printUser(User_t *user) {
     printf("\n\tNome: %s\n", user->name);
 
@@ -154,6 +158,7 @@ void printUser(User_t *user) {
     }
 }
 
+/* Pede do usuário a data de retorno de um livro emprestado */
 void askForReturnDate(Book_t *book) {
     char date[MAX_CHAR_NAME], day[MAX_CHAR_NAME], month[MAX_CHAR_NAME],
         year[MAX_CHAR_NAME];
@@ -171,10 +176,12 @@ void askForReturnDate(Book_t *book) {
     book->returnDate.year = atoi(year);
 }
 
+/* Usado para editar o nome de um usuário */
 void editUserName(User_t *user) {
     editGenericName("Nome", "Usuário", user->name);
 }
 
+/* Retorna um livro de um usuário */
 void returnBookFromUser(User_t *user) {
     if (user->totalRentedBooks == 0) {
         return;
@@ -192,11 +199,13 @@ void returnBookFromUser(User_t *user) {
     removeBookFromUser(user, option - 1);
 }
 
+/* Registra que o livro não está sendo mais emprestado */
 void returnBook(User_t *user, const int rentedBookIndex) {
     Book_t *returnedBook = user->rentedBooks[rentedBookIndex];
     returnedBook->isRented = false;
 }
 
+/* Remove o livro do array de livros emprestados do usuário */
 void removeBookFromUser(User_t *user, const int bookIndex) {
     if (user->totalRentedBooks == 1) {
         user->totalRentedBooks = 0;

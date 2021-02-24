@@ -18,7 +18,6 @@
 
 typedef struct date {
     char dateString[MAX_CHAR_NAME];
-    /* char year[10], month[10], day[10]; */
     int year, month, day;
 } Date_t;
 
@@ -48,8 +47,6 @@ typedef struct library {
     int totalBooks;
 } Library_t;
 extern Library_t library;
-
-/* extern Book_t teste1, teste2, teste3; */
 
 enum USER_EDIT_OPTIONS {
     EDITUSERNAME = 1,

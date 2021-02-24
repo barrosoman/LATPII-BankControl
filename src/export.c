@@ -1,5 +1,6 @@
 #include "libraryControl.h"
 
+/* Função que começa a exportação de dados */
 void exportToFile() {
     char userFilename[MAX_CHAR_NAME];
     char bookFilename[MAX_CHAR_NAME];
@@ -15,21 +16,16 @@ void exportToFile() {
     }
 }
 
+/* Exporta usuários para um arquivo */
 void exportUsersToFile(const char *userFilename) {
     FILE *userFile = fopen(userFilename, "w");
     User_t *user = library.firstUser;
     while (user != NULL) {
-        fprintf(userFile,
-                "\n%s\
-                \n%d",
-                user->name, user->totalRentedBooks);
+        fprintf(userFile, "\n%s\n%d\n", user->name, user->totalRentedBooks);
 
         for (int i = 0; i < user->totalRentedBooks; i++) {
-            fprintf(userFile,
-                    "%s\
-                    \n%s\
-                    \n%s\n",
-                    user->rentedBooks[i]->name, user->rentedBooks[i]->author,
+            fprintf(userFile, "%s\n%s\n%s\n", user->rentedBooks[i]->name,
+                    user->rentedBooks[i]->author,
                     user->rentedBooks[i]->returnDate.dateString);
         }
 
@@ -39,27 +35,15 @@ void exportUsersToFile(const char *userFilename) {
     fclose(userFile);
 }
 
+/* Exporta livros para um arquivo */
 void exportBooksToFile(const char *bookFilename) {
     FILE *bookFile = fopen(bookFilename, "w");
     Book_t *book = library.firstBook;
     while (book != NULL) {
         if (book->isRented == false) {
-            fprintf(bookFile,
-                    "\n%s\
-                    \n%s\
-                    \n%d\
-                    \n%s",
-                    book->name, book->author, book->isRented,
-                    book->returnDate.dateString);
+            fprintf(bookFile, "%s\n%s\n", book->name, book->author);
         }
         book = book->next;
     }
-}
-
-void askForFilename(char *filename, const char *prompt) {
-    printf(
-        "Qual o nome do arquivo para salvar os %s?\
-            \nArquivo: ",
-        prompt);
-    fgetsNoNewline(filename, MAX_CHAR_NAME, stdin);
+    fclose(bookFile);
 }
